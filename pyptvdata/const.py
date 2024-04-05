@@ -1,5 +1,16 @@
 import numpy as np
 
+GTFSR_ENDPOINTS = [
+    'https://data-exchange-api.vicroads.vic.gov.au/opendata/gtfsr/v1/tram/servicealert',
+    'https://data-exchange-api.vicroads.vic.gov.au/opendata/gtfsr/v1/tram/tripupdates',
+    'https://data-exchange-api.vicroads.vic.gov.au/opendata/gtfsr/v1/tram/vehicleposition',
+    'https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrobus-tripupdates',
+    'https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-servicealerts',
+    'https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-tripupdates',
+    'https://data-exchange-api.vicroads.vic.gov.au/opendata/v1/gtfsr/metrotrain-vehicleposition-updates'
+]
+
+
 # Source: https://developers.google.com/transit/gtfs/reference
 ROUTE_TYPES = {
     0 : 'Tram',
