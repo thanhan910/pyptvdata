@@ -8,6 +8,20 @@ Related repositories:
 See also:
 - https://github.com/jessexoc/pyptv
 
+## Source and License
+
+Source: Licensed from Public Transport Victoria under a Creative Commons Attribution 4.0 International Licence.
+
+License: https://creativecommons.org/licenses/by/4.0/
+
+## Disclaimer
+
+I am not affiliated with Public Transport Victoria. This is an unofficial library.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ## Installation
 ```bash
 pip install git+https://github.com/thanhan910/pyptvdata.git
