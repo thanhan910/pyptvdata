@@ -7,3 +7,8 @@ Related repositories:
 
 See also:
 - https://github.com/jessexoc/pyptv
+
+## Installation
+```bash
+pip install git+https://github.com/thanhan910/pyptvdata.git
+```
