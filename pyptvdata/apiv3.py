@@ -1,6 +1,7 @@
 from hashlib import sha1
 import hmac
 import requests
+import urllib.parse
 
 def get_ptv_api_url(
         endpoint : str,
@@ -54,12 +55,27 @@ class PTVAPI3(PTVAPIClient):
         """
         return self.get_data('/swagger/docs/v3', need_auth=False)
     
-    def get_all_routes(self) -> dict:
+    def get_all_routes(self, route_types: list[int] | int = None, route_name : str = None) -> dict:
         """
         Returns all the routes.
         Endpoint: /v3/routes
         """
-        return self.get_data('/v3/routes')['routes']
+        endpoint = '/v3/routes'
+        params = []
+        
+        if route_types is not None:
+            try:
+                params.extend([f'route_types={route_type}' for route_type in route_types])
+            except:
+                params.append(f'route_types={route_types}')
+        
+        if route_name is not None:
+            params.append(f'route_name={urllib.parse.quote(route_name)}')
+        
+        if len(params) > 0:
+            endpoint += '?' + '&'.join(params)
+
+        return self.get_data(endpoint)['routes']
     
     def get_all_route_types(self) -> dict:
         """
@@ -68,12 +84,32 @@ class PTVAPI3(PTVAPIClient):
         """
         return self.get_data('/v3/route_types')['route_types']
     
-    def get_all_disruptions(self) -> dict:
+    def get_all_disruptions(self, route_types : list[int] | int = None, disruption_modes : list[int] | int = None, disruption_status : str = None) -> dict:
         """
         Returns all the disruptions.
         Endpoint: /v3/disruptions
         """
-        return self.get_data('/v3/disruptions')['disruptions']
+        endpoint = '/v3/disruptions'
+        params = []
+        if route_types is not None:
+            try:
+                params.extend([f'route_types={route_type}' for route_type in route_types])
+            except:
+                params.append(f'route_types={route_types}')
+        
+        if disruption_modes is not None:
+            try:
+                params.extend([f'disruption_modes={disruption_mode}' for disruption_mode in disruption_modes])
+            except:
+                params.append(f'disruption_modes={disruption_modes}')
+
+        if disruption_status is not None:
+            params.append(f'disruption_status={disruption_status}')
+
+        if len(params) > 0:
+            endpoint += '?' + '&'.join(params)
+
+        return self.get_data(endpoint)['disruptions']
     
     def get_all_disruption_modes(self) -> dict:
         """
@@ -82,18 +118,64 @@ class PTVAPI3(PTVAPIClient):
         """
         return self.get_data('/v3/disruptions/modes')['disruption_modes']
     
-    def get_all_outlets(self) -> dict:
+    def get_all_outlets(self, max_results : int = 30) -> dict:
         """
         Returns all the outlets.
         Endpoint: /v3/outlets
         """
-        return self.get_data('/v3/outlets')['outlets']
+        return self.get_data(f'/v3/outlets?max_results={max_results}')['outlets']
     
-    def get_search_results(self, search_term : str) -> dict:
+    def get_search_results(
+            self, 
+            search_term : str,
+            route_types : list[int] | int = None,
+            latitude : float = None,
+            longitude : float = None,
+            max_distance : int = None,
+            include_addresses : bool = None,
+            include_outlets : bool = None,
+            match_stop_by_suburb : bool = None,
+            match_route_by_suburb : bool = None,
+            match_stop_by_gtfs_stop_id : bool = None,
+        ) -> dict:
         """
         Returns the search results.
         Endpoint: /v3/search/{search_term}
         """
+        endpoint = f'/v3/search/{search_term}'
+        params = []
+        if route_types is not None:
+            try:
+                params.extend([f'route_types={route_type}' for route_type in route_types])
+            except:
+                params.append(f'route_types={route_types}')
+        if latitude is not None:
+            params.append(f'latitude={latitude}')
+
+        if longitude is not None:
+            params.append(f'longitude={longitude}')
+
+        if max_distance is not None:
+            params.append(f'max_distance={max_distance}')
+
+        if include_addresses is not None:
+            params.append(f"include_addresses={'true' if include_addresses else 'false'}")
+
+        if include_outlets is not None:
+            params.append(f"include_outlets={'true' if include_outlets else 'false'}")
+
+        if match_stop_by_suburb is not None:
+            params.append(f"match_stop_by_suburb={'true' if match_stop_by_suburb else 'false'}")
+
+        if match_route_by_suburb is not None:
+            params.append(f"match_route_by_suburb={'true' if match_route_by_suburb else 'false'}")
+
+        if match_stop_by_gtfs_stop_id is not None:
+            params.append(f"match_stop_by_gtfs_stop_id={'true' if match_stop_by_gtfs_stop_id else 'false'}")
+
+        if len(params) > 0:
+            endpoint += '?' + '&'.join(params)
+
         return self.get_data(f'/v3/search/{search_term}')
     
     def get_departures(self, stop_id : int, route_type : int, route_id : int = None) -> dict:
@@ -102,9 +184,10 @@ class PTVAPI3(PTVAPIClient):
         Endpoint: /v3/departures/route_type/{route_type}/stop/{stop_id}
         Endpoint: /v3/departures/route_type/{route_type}/stop/{stop_id}/route/{route_id}
         """
-        if route_id:
-            return self.get_data(f'/v3/departures/route_type/{route_type}/stop/{stop_id}/route/{route_id}')
-        return self.get_data(f'/v3/departures/route_type/{route_type}/stop/{stop_id}')
+        endpoint = f'/v3/departures/route_type/{route_type}/stop/{stop_id}'
+        if route_id is not None:
+            endpoint += f'/route/{route_id}'
+        return self.get_data(endpoint)
     
     def get_disruptions(self, route_id : int = None, stop_id : int = None) -> dict:
         """
