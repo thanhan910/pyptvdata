@@ -16,7 +16,7 @@ def get_dataclass_name(class_name):
     return 'V3' + class_name
 
 
-def generate_dataclass(class_name, schema):
+def generate_dataclass(class_name : str, schema : dict[str, dict[str, dict[str, dict]]]):
     fields = []
     class_dependencies = set()
     for prop_name, prop_schema in schema["properties"].items():
