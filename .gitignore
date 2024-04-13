@@ -169,3 +169,6 @@ local-*
 
 # Ignore poetry.lock
 poetry.lock
+
+# Ignore all node_modules directories
+node_modules/
